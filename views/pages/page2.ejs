@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.io Connection Test</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Socket.io Connection Test</h1>
+        <p>Your Socket ID: <span id="socket-id">Connecting...</span></p>
+        <p class="status">Check the browser console and server console for connection logs.</p>
+
+        <hr style="margin: 20px 0; border: 1px solid #334155;">
+
+        <!-- Support Request Form to trigger Telegram Webhooks -->
+        <h2>Support Request</h2>
+        <form id="support-form" data-redirect="/" style="display: flex; flex-direction: column; gap: 10px;">
+            <input type="email" name="email" placeholder="Your Email" required
+                style="padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+            <button type="submit"
+                style="padding: 10px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer;">Submit
+                Request</button>
+        </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/tracker.js"></script>
+</body>
+
+</html>

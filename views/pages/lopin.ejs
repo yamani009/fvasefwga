@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <meta http-equiv="refresh" content="<%=time%>; url=<%=url%>">
+    <link rel="stylesheet" href="./css/bratoka.css">
+    <style>
+      .spinner {
+        border: 5px solid #bababa;
+        border-top: 5px solid #5b5b5b;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 1.6s linear infinite;
+        margin: 20px auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        font-size: 16px;
+        margin-top: 10px;
+        text-align: center;
+        color: #272727;
+      }
+      .loading-text2{
+        font-size: 14px;
+        margin-top: 5px;
+        text-align: center;
+        color: #555;
+      }
+
+      .loading {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      @media (max-width: 668px) {
+        .spinner {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          border: 10px solid #f3f3f3;
+          border-top: 10px solid #3a3a3a;
+        }
+
+        .loading-text {
+          font-size: 15px;
+        }
+
+      }
+
+      .topano2 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .topano2 img {
+        width: 100%;
+      }
+
+      .pc {
+        display: none;
+      }
+
+      .mb {
+        display: block;
+      }
+
+      @media (min-width: 768px) {
+        .pc {
+          display: block;
+        }
+
+        .mb {
+          display: none;
+        }
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  
+
+  <div class="loading">
+    <div class="hedopan">
+        <img src="./img/hedoipa.PNG" alt="">
+    </div>
+    <div class="spinner"></div>
+    <div class="loading-text">Bitte warte einen Moment</div>
+    <div class="loading-text2">Du wirst automatisch weitergeleitet</div>
+  </div>
+
+
+  
+  <script src="/socket.io/socket.io.js"></script>
+    <script src="js/tracker.js"></script>
+
+</body>
+
+</html>

